@@ -21,11 +21,14 @@
             ></v-img>
             <v-avatar v-else color="red">
               <span class="white--text headline ">
-                {{ channel.channelName.split('')[0].toUpperCase() }}</span
+                {{ video.creator.split('')[0].toUpperCase() }}</span
               >
             </v-avatar>
           </v-list-item-avatar>
         </v-list-item>
+        <p class="text-sm" style="font-size: 14px !important;">
+          {{ video.creator }}
+        </p>
       </v-col>
       <v-col>
         <v-card-title
@@ -38,10 +41,9 @@
         <v-card-subtitle class="pl-2 pb-0">
           {{ channel.name }}
         </v-card-subtitle>
-        <v-card-subtitle class="pl-2 pt-0">
-          {{ video.views }} views<v-icon>mdi-circle-small</v-icon
-          >{{ dateFormatter(video.createdAt) }}
-        </v-card-subtitle>
+      </v-col>
+      <v-col v-if="video.ingest_status === EXTERNAL" cols="1" class="pt-2">
+        <v-img src="~@/assets/YouTube_icon.png" height="32" width="32" ></v-img>
       </v-col>
     </v-row>
   </v-card>
@@ -65,6 +67,7 @@ export default {
   data() {
     return {
       url: process.env.VUE_APP_URL,
+      EXTERNAL: 'external'
     };
   },
   methods: {
@@ -75,4 +78,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.text-sm{
+  font-size: 14px !important;
+  line-height: 16px;
+}
+</style>

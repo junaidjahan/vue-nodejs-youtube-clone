@@ -54,8 +54,11 @@ const actions = {
     })
   },
   signIn({ commit }, credentials) {
+    const {customDomain, username, password, service_id} = credentials 
+    const url = `https://${customDomain}/api/v1/pod/authtoken`
+
     return new Promise((resolve, reject) => {
-      AuthenticationService.signIn(credentials)
+      AuthenticationService.signIn(url,{username, password, service_id})
         .then(({ data }) => {
           localStorage.setItem('token', data.token)
           commit('SET_TOKEN', data.token)

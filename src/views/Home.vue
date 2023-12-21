@@ -103,7 +103,6 @@ export default {
           this.loading = false
         })
 
-
       if (typeof videos === 'undefined') return
 
       if (videos.data.edges.length) {

@@ -15,7 +15,7 @@
                   <ValidationProvider
                     v-slot="{ errors }"
                     name="Email"
-                    rules="required|email"
+                    rules="required"
                   >
                     <v-text-field
                       v-model="email"
@@ -45,6 +45,19 @@
                       :error-messages="errors"
                       label="Password"
                       outlined
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    name="Email"
+                    rules="required"
+                  >
+                    <v-text-field
+                      v-model="customDomain"
+                      :error-messages="errors"
+                      label="Custom Domain"
+                      outlined
+                      class="mt-3"
                     ></v-text-field>
                   </ValidationProvider>
                   <div class="mt-6 d-flex justify-space-between">
@@ -81,6 +94,8 @@ export default {
   data: () => ({
     email: '',
     password: '',
+    customDomain:'',
+    service_id : process.env.VUE_APP_BYOTUBE_SERVICE_ID,
     loading: false
   }),
   methods: {
@@ -89,7 +104,7 @@ export default {
       this.loading = true
 
       const data = await this.$store
-        .dispatch('signIn', { email: this.email, password: this.password })
+        .dispatch('signIn', { username: this.email, password: this.password, customDomain: this.customDomain, service_id: this.service_id })
         .catch((err) => {
           this.loading = false
           console.log(err)

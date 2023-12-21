@@ -4,7 +4,7 @@
       <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
       <v-toolbar-title class="font-weight-bold"
         ><router-link to="/" class="black--text" style="text-decoration: none"
-          >VueTube</router-link
+          >BYO.Tube</router-link
         ></v-toolbar-title
       >
       <v-spacer></v-spacer>
