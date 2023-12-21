@@ -6,7 +6,7 @@
           <v-col class="grow">
             <div class="title">Error!</div>
             <div>
-              Something went wrong, but don’t fret — let’s give it another shot.
+              Something went wrong, but don’t fr  et — let’s give it another shot. Junaid
             </div>
           </v-col>
           <v-col class="shrink">
@@ -30,8 +30,8 @@
             <v-skeleton-loader type="card-avatar" :loading="loading">
               <video-card
                 :card="{ maxWidth: 350 }"
-                :video="video"
-                :channel="video.userId"
+                :video="video.node"
+                :channel="video.origin"
               ></video-card>
             </v-skeleton-loader>
           </v-col>
@@ -94,7 +94,7 @@ export default {
         this.loading = true
       }
 
-      const videos = await VideoService.getAll('public', { page: this.page })
+      const videos = await VideoService.getAll()
         .catch((err) => {
           console.log(err)
           this.errored = true
@@ -103,11 +103,12 @@ export default {
           this.loading = false
         })
 
+
       if (typeof videos === 'undefined') return
 
-      if (videos.data.data.length) {
+      if (videos.data.edges.length) {
         this.page += 1
-        this.videos.push(...videos.data.data)
+        this.videos.push(...videos.data.edges)
         $state.loaded()
         this.loaded = true
       } else {

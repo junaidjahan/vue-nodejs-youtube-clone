@@ -8,8 +8,7 @@
     :to="`/watch/${video._id}`"
   >
     <v-img
-      :src="`${url}/uploads/thumbnails/${video.thumbnailUrl}`"
-
+      :src="`${video.video_thumbnails[2].url}`"
     ></v-img>
     <v-row no-gutters>
       <v-col cols="2" v-if="card.type != 'noAvatar'">
@@ -18,7 +17,7 @@
             <v-img
               v-if="channel.photoUrl !== 'no-photo.jpg'"
               class="elevation-6"
-              :src="`${url}/uploads/avatars/${channel.photoUrl}`"
+              :src="video.creator_thumbnail"
             ></v-img>
             <v-avatar v-else color="red">
               <span class="white--text headline ">

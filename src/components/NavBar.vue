@@ -1,7 +1,7 @@
 <template>
   <nav id="navbar">
     <v-app-bar class="white" flat app clipped-left>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
       <v-toolbar-title class="font-weight-bold"
         ><router-link to="/" class="black--text" style="text-decoration: none"
           >VueTube</router-link
@@ -152,7 +152,7 @@
       </v-menu>
     </v-app-bar>
 
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       v-model="drawer"
       app
       :clipped="$route.name !== 'Watch'"
@@ -271,7 +271,7 @@
           </span>
         </v-list>
       </div>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
   </nav>
 </template>
 
