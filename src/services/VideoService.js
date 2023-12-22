@@ -4,6 +4,9 @@ export default {
   getAll() {
     return Api().get(`service/data`)
   },
+  getMemberVideos(url) {
+    return Api().post(url)
+  },
   getById(id) {
     return Api().get(`videos/${id}`)
   },

@@ -15,7 +15,7 @@
         <v-list-item class="pl-0 pt-3" router :to="`/channels/${channel._id}`">
           <v-list-item-avatar>
             <v-img
-              v-if="channel.photoUrl !== 'no-photo.jpg'"
+              v-if="video.creator_thumbnail"
               class="elevation-6"
               :src="video.creator_thumbnail"
             ></v-img>
@@ -59,7 +59,7 @@ export default {
       required: true,
     },
     channel: {
-      type: Object,
+      type: [Object,String],
       required: true,
     },
     card: Object,

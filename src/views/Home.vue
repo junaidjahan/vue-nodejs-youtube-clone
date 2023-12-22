@@ -86,10 +86,17 @@ export default {
     loaded: false,
     errored: false,
     videos: [],
-    page: 1
+    service_id : process.env.VUE_APP_BYOTUBE_SERVICE_ID,
+    page: 1,
+    initialState : {
+        auth_token: typeof window !== "undefined" ? window.localStorage.getItem('token') : null,
+        domain: typeof window !== "undefined" ? window.localStorage.getItem('domain') : null,
+        isAuthenticated: null,
+        user: null
+    }
   }),
   methods: {
-    async getVideos($state) {
+    async getServiceVideos($state) {
       if (!this.loaded) {
         this.loading = true
       }
@@ -113,6 +120,41 @@ export default {
       } else {
         $state.complete()
       }
+    },
+    async getMemberVideos($state) {
+      if (!this.loaded) {
+        this.loading = true
+      }
+      
+      let host_url = ''
+      if(this.initialState.domain){
+        host_url = `https://${this.initialState.domain}`
+      }
+
+      const data_url = `${host_url}/api/v1/data/${this.service_id}/public_assets/query`;
+
+      const videos = await VideoService.getMemberVideos(data_url)
+        .catch((err) => {
+          console.log(err)
+          this.errored = true
+        })
+        .finally(() => {
+          this.loading = false
+        })
+
+      if (typeof videos === 'undefined') return
+
+      if (videos.data.edges.length) {
+        this.page += 1
+        this.videos.push(...videos.data.edges)
+        $state.loaded()
+        this.loaded = true
+      } else {
+        $state.complete()
+      }
+    },
+    async getVideos(){
+      this.initialState.auth_token ? this.getMemberVideos() : this.getServiceVideos()
     },
     dateFormatter(date) {
       return moment(date).fromNow()
