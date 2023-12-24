@@ -26,12 +26,14 @@
             v-for="(video, i) in loading ? 12 : videos"
             :key="i"
             class="mx-xs-auto"
+            @click="getItem(video)"
           >
             <v-skeleton-loader type="card-avatar" :loading="loading">
               <video-card
                 :card="{ maxWidth: 350 }"
                 :video="video.node"
                 :channel="video.origin"
+             
               ></video-card>
             </v-skeleton-loader>
           </v-col>
@@ -75,9 +77,9 @@
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
 import moment from 'moment'
-
 import VideoCard from '@/components/VideoCard'
 import VideoService from '@/services/VideoService'
+import { constants } from '@/globals/contants'
 
 export default {
   name: 'Home',
@@ -158,6 +160,34 @@ export default {
     },
     dateFormatter(date) {
       return moment(date).fromNow()
+    },
+    getItem(edge) {
+      const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      const SIGNED_TOKEN = "dummy"
+
+      let asset = edge.node
+      if (asset.ingest_status != 'external') {
+        let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${constants.BYOTUBE_SERVICE_ID}&signedby=${SIGNEDBY}&token=${SIGNED_TOKEN}&ingest_status=${asset.ingest_status}`
+        fetch(apiUrl)
+          .then((response) => response.json())
+          .then(
+            (data) => {
+              asset = {...asset, key_id:data.key_id, content_token: data.content_token}
+              localStorage.setItem('watch', JSON.stringify(asset))
+              this.$router.push({name:'Watch'})
+              
+            }
+          )
+          .catch(
+            (error) => {
+              console.error(error);
+            }
+          );
+        console.log("URL", apiUrl);
+      }else{
+        localStorage.setItem('watch', JSON.stringify(asset))
+        this.$router.push({name:'Watch'})
+      }
     }
   },
   components: {

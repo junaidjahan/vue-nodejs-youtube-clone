@@ -16,34 +16,24 @@
             </v-col>
           </v-row>
         </v-alert>
-        <v-col v-else cols="11" class="mx-auto">
+        <v-col cols="11" class="mx-auto">
           <v-row>
-            <v-col cols="12" sm="12" md="8" lg="8">
+            <v-col cols="12">
               <v-skeleton-loader
                 type="card-avatar, article, actions"
-                :loading="videoLoading"
                 tile
                 large
               >
                 <div ref="hello">
-                  <v-responsive max-height="450">
-                    <video
-                      ref="videoPlayer"
-                      controls
-                      style="height: 100%; width: 100%"
-                    >
-                      <source
-                        :src="`${url}/uploads/videos/${video.url}`"
-                        type="video/mp4"
-                      />
-                    </video>
+                  <v-responsive>
+                    <video-player :options="getVideoOptions" :key-id="key_id" :content-token="content_token" />
                   </v-responsive>
 
                   <v-card flat tile class="card">
                     <v-card-title class="pl-0 pb-0">{{
                       video.title
                     }}</v-card-title>
-                    <div
+                    <!-- <div
                       class="d-flex flex-wrap justify-space-between"
                       id="btns"
                     >
@@ -87,17 +77,11 @@
                           class="grey--text text--darken-1"
                           ><v-icon>mdi-download</v-icon> Download</v-btn
                         >
-                        <!-- <v-btn text class="grey--text text--darken-1"
-                          ><v-icon>mdi-share</v-icon> Share</v-btn
-                        >
-                        <v-btn text class="grey--text text--darken-1"
-                          ><v-icon>mdi-playlist-plus</v-icon> Save</v-btn
-                        > -->
                       </v-card-actions>
-                    </div>
+                    </div> -->
                   </v-card>
 
-                  <v-row class="justify-space-between">
+                  <!-- <v-row class="justify-space-between">
                     <v-col cols="12" sm="6" md="5" lg="5">
                       <v-card class="transparent" flat>
                         <v-list-item three-line>
@@ -177,28 +161,6 @@
                           @click="subscribe"
                           >{{ !subscribed ? 'subscribe' : 'subscribed' }}</v-btn
                         >
-
-                        <!-- <v-btn
-                          v-if="
-                            video.userId && video.userId._id !== currentUser._id
-                          "
-                          :class="[
-                            { 'red white--text': !subscribed },
-                            {
-                              'grey grey--text lighten-3 text--darken-3': subscribed
-                            },
-                            'mt-6'
-                          ]"
-                          tile
-                          large
-                          depressed
-                          :loading="subscribeLoading"
-                          @click="subscribe"
-                          >{{ !subscribed ? 'subscribe' : 'subscribed' }}</v-btn
-                        > -->
-                        <!-- <v-btn icon class="ml-5 mt-6"
-                          ><v-icon>mdi-bell</v-icon></v-btn
-                        > -->
                       </div>
                     </v-col>
                     <v-col class="pl-11" offset="1" cols="11" md="11">
@@ -213,11 +175,11 @@
                         >Show More</v-btn
                       >
                     </v-col>
-                  </v-row>
+                  </v-row> -->
                 </div>
               </v-skeleton-loader>
 
-              <v-row>
+              <!-- <v-row>
                 <v-col v-if="video && video.status === 'public'">
                   <p class="mb-0">{{ video.comments }} Comments</p>
 
@@ -230,10 +192,10 @@
                     :videoId="video._id"
                   />
                 </v-col>
-              </v-row>
+              </v-row> -->
             </v-col>
 
-            <v-col cols="12" sm="12" md="4" lg="4">
+            <!-- <v-col cols="12" sm="12" md="4" lg="4">
               <hr class="grey--text" />
               <h4 class="mb-3 mt-3">Up next</h4>
               <div
@@ -257,7 +219,6 @@
                   >
                     <v-row no-gutters>
                       <v-col class="mx-auto" cols="12" sm="12" md="5" lg="5">
-                        <!-- <v-responsive max-height="100%"> -->
                         <v-img
                           class="align-center"
                           height="110"
@@ -266,7 +227,6 @@
                           "
                         >
                         </v-img>
-                        <!-- </v-responsive> -->
                       </v-col>
                       <v-col>
                         <div class="ml-2">
@@ -293,7 +253,6 @@
                   </v-card>
                 </v-skeleton-loader>
               </div>
-              <!-- <v-col cols="12" sm="12" md="12" lg="12"> -->
               <infinite-loading :identifier="infiniteId" @infinite="getVideos">
                 <div slot="spinner">
                   <v-progress-circular
@@ -320,8 +279,7 @@
                   </v-alert>
                 </div>
               </infinite-loading>
-              <!-- </v-col> -->
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-col>
       </v-row>
@@ -337,16 +295,18 @@
 <script>
 import moment from 'moment'
 import { mapGetters } from 'vuex'
-import InfiniteLoading from 'vue-infinite-loading'
-
+// import InfiniteLoading from 'vue-infinite-loading'
+import 'video.js/dist/video-js.css';
 import VideoService from '@/services/VideoService'
 import SubscriptionService from '@/services/SubscriptionService'
 import FeelingService from '@/services/FeelingService'
-import HistoryService from '@/services/HistoryService'
+// import HistoryService from '@/services/HistoryService'
 
 import SigninModal from '@/components/SigninModal'
-import AddComment from '@/components/comments/AddComment'
-import CommentList from '@/components/comments/CommentList'
+// import AddComment from '@/components/comments/AddComment'
+// import CommentList from '@/components/comments/CommentList'
+import VideoPlayer from '@/components/VideoPlayer.vue'
+import 'videojs-youtube';
 
 export default {
   data: () => ({
@@ -366,78 +326,80 @@ export default {
     truncate: true,
     url: process.env.VUE_APP_URL,
     signinDialog: false,
-    details: {}
+    details: {},
+    service_id : process.env.VUE_APP_BYOTUBE_SERVICE_ID,
+    initialState : {
+        auth_token: typeof window !== "undefined" ? window.localStorage.getItem('token') : null,
+        domain: typeof window !== "undefined" ? window.localStorage.getItem('domain') : null,
+        isAuthenticated: null,
+        user: null
+    },
+    asset:{},
+    videoOptions: {},
+    key_id:'',
+    content_token:''
+   
   }),
   computed: {
-    ...mapGetters(['currentUser', 'getUrl', 'isAuthenticated'])
+    ...mapGetters(['currentUser', 'getUrl', 'isAuthenticated']),
+    getVideoOptions(){
+      return this.videoOptions
+    }
   },
   methods: {
-    async getVideo(id) {
-      this.errored = false
-      this.videoLoading = true
-      this.video = {}
-      try {
-        const video = await VideoService.getById(id)
+    async getVideo() {  
+      let assetData = typeof window !== "undefined" ? window.localStorage.getItem('watch') : null
+      if(!assetData) return
+      assetData = JSON.parse(assetData)
 
-        if (!video) return this.$router.push('/')
-        this.video = video.data.data
-      } catch (err) {
-        this.errored = true
-        console.log(err)
-      } finally {
-        this.videoLoading = false
-        this.checkSubscription(this.video.userId._id)
-        this.checkFeeling(this.video._id)
-      }
-      if (this.currentUser && this.currentUser._id === this.video.userId._id) {
-        this.showSubBtn = false
-      } else {
-        this.showSubBtn = true
+      this.asset = {
+        asset_url: assetData.asset_url,
+        asset_id: assetData.asset_id,
+        title: assetData.title,
+        video_thumbnail: assetData.video_thumbnails[9],
+        creator: assetData.creator,
+        creator_thumbnail: assetData.creator_thumbnail,
+        ingest_status: assetData.ingest_status,
+        publisher_asset_id: null
       }
 
-      if (!this.isAuthenticated) return
+      this.key_id = assetData.key_id
+      this.content_token = assetData.content_token
 
-      if (
-        this.video.userId._id.toString() !== this.currentUser._id.toString() &&
-        this.video.status !== 'public'
-      )
-        return this.$router.push('/')
-
-      const data = {
-        type: 'watch',
-        videoId: this.video._id
+      if (this.key_id) {
+          this.asset.asset_url += `?key_id=${this.key_id}`
       }
 
-      await HistoryService.createHistory(data).catch((err) => console.log(err))
-    },
-    async getVideos($state) {
-      this.errored = false
-      if (!this.loaded) {
-        this.loading = true
+
+      this.type = 'application/dash+xml'
+      if (this.asset.ingest_status == 'external') {
+        this.type = 'video/youtube'
       }
-      const videos = await VideoService.getAll('public', { page: this.page })
-        .catch((err) => {
-          console.log(err)
-          this.errored = true
-        })
-        .finally(() => (this.loading = false))
 
-      if (typeof videos === 'undefined') return
+      this.videoOptions = {
+        autoplay: false,
+        controls: true,
+        responsive: true,
+        width: '1120',
+        height: '630',
 
-      if (videos.data.data.length) {
-        this.page += 1
-
-        this.videos.push(...videos.data.data)
-        if ($state) {
-          $state.loaded()
-        }
-
-        this.loaded = true
-      } else {
-        if ($state) {
-          $state.complete()
-        }
+        poster: this.asset.video_thumbnail.url,
+        sources: [
+          {
+            src:
+                this.asset.asset_url,
+              type: this.type
+          }
+        ],
       }
+
+     
+
+      if (this.asset.ingest_status == 'external') {
+        this.videoOptions['techOrder'] = ['youtube'];
+        // videoJsOptions['autoplay'] = true;
+      }
+
     },
     async checkSubscription(id) {
       if (!this.isAuthenticated) return
@@ -473,6 +435,7 @@ export default {
       if (feeling.data.data.feeling === 'like') this.feeling = 'like'
       else if (feeling.data.data.feeling === 'dislike') this.feeling = 'dislike'
     },
+  
     async createFeeling(type) {
       if (!this.isAuthenticated) {
         this.signinDialog = true
@@ -588,22 +551,25 @@ export default {
     }
   },
   components: {
-    AddComment,
-    CommentList,
+    // AddComment,
+    // CommentList,
     SigninModal,
-    InfiniteLoading
+    // InfiniteLoading,
+    VideoPlayer,
+},
+  created(){
+  this.getVideo()
   },
   mounted() {
-    this.getVideo(this.$route.params.id)
-    if (this.isAuthenticated) this.updateViews(this.$route.params.id)
+    // if (this.isAuthenticated) this.updateViews(this.$route.params.id)
   },
-  beforeRouteUpdate(to, from, next) {
-    this.page = 1
-    ;(this.loading = false), (this.loaded = false), (this.videos = [])
-    this.infiniteId += 1
-    this.getVideo(to.params.id)
-    next()
-  }
+  // beforeRouteUpdate(to, from, next) {
+  //   this.page = 1
+  //   ;(this.loading = false), (this.loaded = false), (this.videos = [])
+  //   this.infiniteId += 1
+  //   this.getVideo(to.params.id)
+  //   next()
+  // }
 }
 </script>
 

@@ -107,7 +107,7 @@ const routes = [
     ]
   },
   {
-    path: '/watch/:id',
+    path: '/watch',
     name: 'Watch',
     components: {
       NavBar,

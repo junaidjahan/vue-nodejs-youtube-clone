@@ -7,8 +7,9 @@ export default {
   getMemberVideos(url) {
     return Api().post(url)
   },
-  getById(id) {
-    return Api().get(`videos/${id}`)
+  
+  getById(url, filter) {
+      return Api().post(url, filter)
   },
   uploadVideo(data, optional) {
     return Api().post('videos', data, optional)

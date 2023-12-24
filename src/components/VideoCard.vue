@@ -5,7 +5,6 @@
     flat
     tile
     router
-    :to="`/watch/${video._id}`"
   >
     <v-img
       :src="`${video.video_thumbnails[2].url}`"
@@ -74,6 +73,11 @@ export default {
     dateFormatter(date) {
       return moment(date).fromNow();
     },
+    watchVideo(){
+      localStorage.setItem('watch', JSON.stringify(this.video))
+      this.$router.push({name:'Watch'})
+    }
+
   },
 };
 </script>
