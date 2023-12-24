@@ -16,7 +16,7 @@
       </v-alert>
 
       <main v-else>
-        <h3 class="headline font-weight-medium">Recommended</h3>
+        <h3 class="headline font-weight-medium"> {{ $store.getters.isAuthenticated ? 'From your network' : 'Recommended' }}</h3>
         <v-row>
           <v-col
             cols="12"
@@ -155,8 +155,8 @@ export default {
         $state.complete()
       }
     },
-    async getVideos(){
-      this.initialState.auth_token ? this.getMemberVideos() : this.getServiceVideos()
+    async getVideos($state){
+      this.initialState.auth_token ? await this.getMemberVideos($state) : await this.getServiceVideos($state)
     },
     dateFormatter(date) {
       return moment(date).fromNow()
@@ -183,7 +183,6 @@ export default {
               console.error(error);
             }
           );
-        console.log("URL", apiUrl);
       }else{
         localStorage.setItem('watch', JSON.stringify(asset))
         this.$router.push({name:'Watch'})

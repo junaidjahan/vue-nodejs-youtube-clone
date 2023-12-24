@@ -2,10 +2,18 @@
   <nav id="navbar">
     <v-app-bar class="white" flat app clipped-left>
       <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
-      <v-toolbar-title class="font-weight-bold"
-        ><router-link to="/" class="black--text" style="text-decoration: none"
-          >BYO.Tube</router-link
-        ></v-toolbar-title
+      <v-toolbar-title class="font-weight-bold d-flex align-items-center"
+        >
+        <v-img src="~@/assets/byotube-orange-logo.png" :width="68" :height="39" contain />
+        <div class="d-flex align-items-center">
+          <router-link to="/" class="black--text font-weight-bold d-flex align-items-center" style="text-decoration: none">
+            <p class="mb-0 " style="display: flex; align-items: center;">
+              BYO.Tube
+            </p>
+            </router-link
+          >
+        </div>
+        </v-toolbar-title
       >
       <v-spacer></v-spacer>
       <!-- <v-text-field
@@ -427,7 +435,8 @@ export default {
   methods: {
     logout(){
       localStorage.removeItem('token')
-      this.$router.push('/signin')
+      // this.$router.push('/signin')
+      window.location.reload();
     },
     async search() {
       if (!this.searchText) return

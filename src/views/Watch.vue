@@ -27,81 +27,85 @@
                 <div style="width: fit-content;">
                   <v-responsive :max-width="1120">
                     <video-player :options="getVideoOptions" :key-id="key_id" :content-token="content_token" />
-                  </v-responsive>
-
-                  <v-card flat tile class="card">
-                    <div class="d-flex justify-space-between">
-                      <div class="d-flex align-items-center mt-3">
-                          <v-list-item-avatar>
-                              <v-img
-                                v-if="asset.creator_thumbnail"
-                                class="elevation-6"
-                                :src="asset.creator_thumbnail"
-                          
-                              ></v-img>
-                          <v-avatar v-else color="red">
-                            <span class="white--text headline ">
-                              {{ asset.creator.split('')[0].toUpperCase() }}</span
-                            >
-                          </v-avatar>
-                        </v-list-item-avatar>
-                        <v-card-title class="pl-0 pb-0 pt-0 font-weight-bold">
-                          {{
-                            asset.title
-                          }}
-                        </v-card-title>
+                    <v-card flat tile class="card">
+                      <div class="d-flex justify-space-between">
+                        <div class="d-flex align-items-center mt-3">
+                            <v-list-item-avatar>
+                                <v-img
+                                  v-if="asset.creator_thumbnail"
+                                  class="elevation-6"
+                                  :src="asset.creator_thumbnail"
+                            
+                                ></v-img>
+                            <v-avatar v-else color="red">
+                              <span class="white--text headline ">
+                                {{ asset.creator.split('')[0].toUpperCase() }}</span
+                              >
+                            </v-avatar>
+                          </v-list-item-avatar>
+                          <v-card-title class="pl-0 pb-0 pt-0 font-weight-bold">
+                            {{
+                              asset.title
+                            }}
+                          </v-card-title>
+                        </div>
+                        <div v-if="asset.ingest_status === EXTERNAL" cols="1" class="pt-2">
+                          <v-img src="~@/assets/YouTube_icon.png" height="50" width="50" ></v-img>
+                        </div>
                       </div>
-                      <div v-if="asset.ingest_status === EXTERNAL" cols="1" class="pt-2">
-                        <v-img src="~@/assets/YouTube_icon.png" height="50" width="50" ></v-img>
-                      </div>
-                    </div>
-                    <!-- <div
-                      class="d-flex flex-wrap justify-space-between"
-                      id="btns"
-                    >
-                      <v-card-subtitle
-                        class="pl-0 pt-0 pb-0 subtitle-1"
-                        style="line-height: 2.4em;"
+                      <!-- <div
+                        class="d-flex flex-wrap justify-space-between"
+                        id="btns"
                       >
-                        {{ video.views }} views<v-icon>mdi-circle-small</v-icon
-                        >{{ dateFormatter(video.createdAt) }}
-                      </v-card-subtitle>
-                      <v-card-actions class="pt-0 pl-0">
-                        <v-btn text @click="createFeeling('like')"
-                          ><v-icon
-                            :class="
-                              `pr-2${
-                                feeling !== 'like'
-                                  ? ' grey--text text--darken-1'
-                                  : ''
-                              }`
-                            "
-                            >mdi-thumb-up</v-icon
-                          >{{ video.likes }}</v-btn
+                        <v-card-subtitle
+                          class="pl-0 pt-0 pb-0 subtitle-1"
+                          style="line-height: 2.4em;"
                         >
-
-                        <v-btn text @click="createFeeling('dislike')"
-                          ><v-icon
-                            :class="
-                              `pr-2${
-                                feeling !== 'dislike'
-                                  ? ' grey--text text--darken-1'
-                                  : ''
-                              }`
-                            "
-                            >mdi-thumb-down</v-icon
+                          {{ video.views }} views<v-icon>mdi-circle-small</v-icon
+                          >{{ dateFormatter(video.createdAt) }}
+                        </v-card-subtitle>
+                        <v-card-actions class="pt-0 pl-0">
+                          <v-btn text @click="createFeeling('like')"
+                            ><v-icon
+                              :class="
+                                `pr-2${
+                                  feeling !== 'like'
+                                    ? ' grey--text text--darken-1'
+                                    : ''
+                                }`
+                              "
+                              >mdi-thumb-up</v-icon
+                            >{{ video.likes }}</v-btn
                           >
-                          {{ video.dislikes }}</v-btn
-                        >
-                        <v-btn
-                          :href="`${url}/uploads/videos/${video.url}`"
-                          text
-                          class="grey--text text--darken-1"
-                          ><v-icon>mdi-download</v-icon> Download</v-btn
-                        >
-                      </v-card-actions>
-                    </div> -->
-                  </v-card>
+  
+                          <v-btn text @click="createFeeling('dislike')"
+                            ><v-icon
+                              :class="
+                                `pr-2${
+                                  feeling !== 'dislike'
+                                    ? ' grey--text text--darken-1'
+                                    : ''
+                                }`
+                              "
+                              >mdi-thumb-down</v-icon
+                            >
+                            {{ video.dislikes }}</v-btn
+                          >
+                          <v-btn
+                            :href="`${url}/uploads/videos/${video.url}`"
+                            text
+                            class="grey--text text--darken-1"
+                            ><v-icon>mdi-download</v-icon> Download</v-btn
+                          >
+                        </v-card-actions>
+                      </div> -->
+                    </v-card>
+                    <div class="pa-3" style="background-color: #e5e5e5; border-radius: 5px;">
+                      <p class="black--text">
+                        {{ asset.contents }}
+                      </p>
+                    </div>
+                  </v-responsive>
 
                   <!-- <v-row class="justify-space-between">
                     <v-col cols="12" sm="6" md="5" lg="5">
@@ -305,6 +309,7 @@
           </v-row>
         </v-col>
       </v-row>
+   
     </v-container>
     <signin-modal
       :openModal="signinDialog"
@@ -383,7 +388,8 @@ export default {
         creator: assetData.creator,
         creator_thumbnail: assetData.creator_thumbnail,
         ingest_status: assetData.ingest_status,
-        publisher_asset_id: null
+        publisher_asset_id: null,
+        contents:assetData.contents
       }
 
       this.key_id = assetData.key_id

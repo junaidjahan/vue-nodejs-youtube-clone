@@ -101,6 +101,7 @@ export default {
   methods: {
     async signin() {
       if (this.loading) return
+      this.loading = true
       try{
   
         const data = await this.$store
@@ -121,7 +122,7 @@ export default {
       }catch(error){
         console.error("Error:", error)
       }finally{
-        this.loading = true
+        this.loading = false
       }
 
     }
