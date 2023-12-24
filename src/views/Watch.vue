@@ -100,7 +100,7 @@
                         </v-card-actions>
                       </div> -->
                     </v-card>
-                    <div class="pa-3" style="background-color: #e5e5e5; border-radius: 5px;">
+                    <div v-if="asset.contents " class="pa-3" style="background-color: #e5e5e5; border-radius: 5px;">
                       <p class="black--text">
                         {{ asset.contents }}
                       </p>
