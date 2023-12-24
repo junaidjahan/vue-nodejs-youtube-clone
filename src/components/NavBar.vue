@@ -74,7 +74,7 @@
         <v-icon left size="26">mdi-account-circle</v-icon> Sign in
       </v-btn>
 
-      <v-menu offset-y left v-else>
+      <!-- <v-menu offset-y left v-else>
         <template v-slot:activator="{ on }">
           <v-btn small color="red" depressed fab v-on="on" class="white--text">
             <v-avatar v-if="currentUser.photoUrl !== 'no-photo.jpg'">
@@ -149,7 +149,7 @@
             </v-list-item>
           </v-list>
         </v-card>
-      </v-menu>
+      </v-menu> -->
     </v-app-bar>
 
     <!-- <v-navigation-drawer
