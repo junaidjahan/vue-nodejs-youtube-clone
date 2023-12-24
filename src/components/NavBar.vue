@@ -67,6 +67,17 @@
       >
         <v-icon left size="26">mdi-account-circle</v-icon> Sign in
       </v-btn>
+      <v-btn
+        tile
+        outlined
+        color="blue"
+        class="font-weight-bold"
+        v-else-if="$store.getters.isAuthenticated"
+        router
+        @click="logout"
+      >
+        <v-icon left size="26">mdi-account-circle</v-icon> Sign out
+      </v-btn>
 
       <!-- <v-menu offset-y left v-else>
         <template v-slot:activator="{ on }">
@@ -414,6 +425,10 @@ export default {
     ...mapGetters(['currentUser', 'getUrl', 'isAuthenticated'])
   },
   methods: {
+    logout(){
+      localStorage.removeItem('token')
+      this.$router.push('/signin')
+    },
     async search() {
       if (!this.searchText) return
       // console.log(this.searchText == this.$route.query['search-query'])

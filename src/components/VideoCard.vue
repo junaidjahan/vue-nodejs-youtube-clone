@@ -8,8 +8,8 @@
   >
     <v-img
       :src="`${video.video_thumbnails[2].url}`"
-      :max-height="185"
-      :max-width="328"
+      :height="185"
+      :width="328"
     ></v-img>
     <v-row no-gutters>
       <v-col cols="2" v-if="card.type != 'noAvatar'">
