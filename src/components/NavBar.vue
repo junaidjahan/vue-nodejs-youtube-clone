@@ -8,7 +8,7 @@
         ></v-toolbar-title
       >
       <v-spacer></v-spacer>
-      <v-text-field
+      <!-- <v-text-field
         flat
         hide-details
         append-icon="mdi-magnify"
@@ -17,11 +17,11 @@
         dense
         v-model="searchText"
         @click:append="search"
-      ></v-text-field>
+      ></v-text-field> -->
 
-      <v-spacer></v-spacer>
+      <!-- <v-spacer></v-spacer> -->
 
-      <v-menu offsetY>
+      <!-- <v-menu offsetY>
         <template v-slot:activator="{ on: menu }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on: tooltip }">
@@ -39,14 +39,8 @@
             >
             <v-list-item-title>Upload video</v-list-item-title>
           </v-list-item>
-          <!-- <v-list-item>
-            <v-list-item-icon class="mr-3"
-              ><v-icon>mdi-access-point</v-icon></v-list-item-icon
-            >
-            <v-list-item-title>Go live</v-list-item-title>
-          </v-list-item> -->
         </v-list>
-      </v-menu>
+      </v-menu> -->
       <!-- <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on"> <v-icon size="25">mdi-apps</v-icon></v-btn>
