@@ -1,6 +1,6 @@
 <template>
   <div id="watch" ref="watch">
-    <v-container fluid>
+    <v-container fluid >
       <v-row>
         <v-alert prominent class="mx-auto" type="error" v-if="errored">
           <v-row align="center">
@@ -24,15 +24,37 @@
                 tile
                 large
               >
-                <div ref="hello">
-                  <v-responsive>
+                <div style="width: fit-content;">
+                  <v-responsive :max-width="1120">
                     <video-player :options="getVideoOptions" :key-id="key_id" :content-token="content_token" />
                   </v-responsive>
 
                   <v-card flat tile class="card">
-                    <v-card-title class="pl-0 pb-0">{{
-                      video.title
-                    }}</v-card-title>
+                    <div class="d-flex justify-space-between">
+                      <div class="d-flex align-items-center mt-3">
+                          <v-list-item-avatar>
+                              <v-img
+                                v-if="asset.creator_thumbnail"
+                                class="elevation-6"
+                                :src="asset.creator_thumbnail"
+                          
+                              ></v-img>
+                          <v-avatar v-else color="red">
+                            <span class="white--text headline ">
+                              {{ asset.creator.split('')[0].toUpperCase() }}</span
+                            >
+                          </v-avatar>
+                        </v-list-item-avatar>
+                        <v-card-title class="pl-0 pb-0 pt-0 font-weight-bold">
+                          {{
+                            asset.title
+                          }}
+                        </v-card-title>
+                      </div>
+                      <div v-if="asset.ingest_status === EXTERNAL" cols="1" class="pt-2">
+                        <v-img src="~@/assets/YouTube_icon.png" height="50" width="50" ></v-img>
+                      </div>
+                    </div>
                     <!-- <div
                       class="d-flex flex-wrap justify-space-between"
                       id="btns"
@@ -319,6 +341,7 @@ export default {
     showSubBtn: true,
     feeling: '',
     video: {},
+    EXTERNAL: 'external',
     videoId: '',
     videos: [],
     page: 1,

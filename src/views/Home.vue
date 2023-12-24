@@ -133,7 +133,7 @@ export default {
         host_url = `https://${this.initialState.domain}`
       }
 
-      const data_url = `${host_url}/api/v1/data/${this.service_id}/public_assets/query`;
+      const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query`;
 
       const videos = await VideoService.getMemberVideos(data_url)
         .catch((err) => {

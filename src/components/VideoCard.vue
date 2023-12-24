@@ -8,6 +8,8 @@
   >
     <v-img
       :src="`${video.video_thumbnails[2].url}`"
+      :max-height="185"
+      :max-width="328"
     ></v-img>
     <v-row no-gutters>
       <v-col cols="2" v-if="card.type != 'noAvatar'">
@@ -17,6 +19,7 @@
               v-if="video.creator_thumbnail"
               class="elevation-6"
               :src="video.creator_thumbnail"
+          
             ></v-img>
             <v-avatar v-else color="red">
               <span class="white--text headline ">
