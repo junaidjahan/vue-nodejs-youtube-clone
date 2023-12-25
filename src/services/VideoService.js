@@ -4,8 +4,12 @@ export default {
   getAll() {
     return Api().get(`service/data`)
   },
-  getMemberVideos(url) {
-    return Api().post(url)
+  getMemberVideos(url, body={}) {
+    return Api().post(url, body)
+  },
+
+  async follow({domain, serviceId}, body){
+    return await Api().post(`https://${domain}/api/v1/data/${serviceId}/network_invites/append`, body)
   },
   
   getById(url, filter) {

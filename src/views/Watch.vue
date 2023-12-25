@@ -29,7 +29,7 @@
                     <video-player :options="getVideoOptions" :key-id="key_id" :content-token="content_token" />
                     <v-card flat tile class="card">
                       <div class="d-flex justify-space-between">
-                        <div class="d-flex align-items-center mt-3">
+                        <div class="d-flex align-center mt-3">
                             <v-list-item-avatar>
                                 <v-img
                                   v-if="asset.creator_thumbnail"
@@ -37,17 +37,20 @@
                                   :src="asset.creator_thumbnail"
                             
                                 ></v-img>
-                            <v-avatar v-else color="red">
-                              <span class="white--text headline ">
-                                {{ asset.creator.split('')[0].toUpperCase() }}</span
-                              >
-                            </v-avatar>
-                          </v-list-item-avatar>
-                          <v-card-title class="pl-0 pb-0 pt-0 font-weight-bold">
-                            {{
-                              asset.title
-                            }}
-                          </v-card-title>
+                                <v-avatar v-else color="red">
+                                  <span class="white--text headline ">
+                                    {{ asset.creator.split('')[0].toUpperCase() }}</span
+                                  >
+                                </v-avatar>
+                            </v-list-item-avatar>
+                            <v-card-title class="pl-0 pb-0 pt-0 font-weight-bold">
+                              {{
+                                asset.title
+                              }}
+                            </v-card-title>
+                              <v-btn rounded outlined @click="followChannel" >
+                                Follow
+                              </v-btn>
                         </div>
                         <div v-if="asset.ingest_status === EXTERNAL" cols="1" class="pt-2">
                           <v-img src="~@/assets/YouTube_icon.png" height="50" width="50" ></v-img>
@@ -100,7 +103,7 @@
                         </v-card-actions>
                       </div> -->
                     </v-card>
-                    <div v-if="asset.contents " class="pa-3" style="background-color: #e5e5e5; border-radius: 5px;">
+                    <div v-if="asset.contents " class="pa-3 mt-2" style="background-color: #e5e5e5; border-radius: 5px;">
                       <p class="black--text">
                         {{ asset.contents }}
                       </p>
@@ -334,8 +337,11 @@ import SigninModal from '@/components/SigninModal'
 // import CommentList from '@/components/comments/CommentList'
 import VideoPlayer from '@/components/VideoPlayer.vue'
 import 'videojs-youtube';
+import {followMixin} from '@/mixins/follow.js'
+
 
 export default {
+  mixins:[followMixin],
   data: () => ({
     loading: false,
     loaded: false,
@@ -380,17 +386,7 @@ export default {
       if(!assetData) return
       assetData = JSON.parse(assetData)
 
-      this.asset = {
-        asset_url: assetData.asset_url,
-        asset_id: assetData.asset_id,
-        title: assetData.title,
-        video_thumbnail: assetData.video_thumbnails[9],
-        creator: assetData.creator,
-        creator_thumbnail: assetData.creator_thumbnail,
-        ingest_status: assetData.ingest_status,
-        publisher_asset_id: null,
-        contents:assetData.contents
-      }
+      this.asset = {...assetData,  video_thumbnail: assetData.video_thumbnails[9],}
 
       this.key_id = assetData.key_id
       this.content_token = assetData.content_token
@@ -429,6 +425,10 @@ export default {
         // videoJsOptions['autoplay'] = true;
       }
 
+    },
+
+    async followChannel(){
+      await this.follow(this.asset.creator, this.asset.origin, this.service_id, this.asset.created_timestamp)
     },
     async checkSubscription(id) {
       if (!this.isAuthenticated) return

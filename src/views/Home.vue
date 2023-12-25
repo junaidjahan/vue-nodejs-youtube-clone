@@ -33,7 +33,7 @@
                 :card="{ maxWidth: 350 }"
                 :video="video.node"
                 :channel="video.origin"
-             
+                @follow="followChannel(video.node, video.origin)"
               ></video-card>
             </v-skeleton-loader>
           </v-col>
@@ -41,10 +41,11 @@
             <p>No videos yet</p>
           </v-col>
           <v-col cols="12" sm="12" md="12" lg="12">
-            <infinite-loading @infinite="getVideos">
+            <infinite-loading @infinite="getVideos($event, '2')">
               <div slot="spinner">
                 <v-progress-circular
                   indeterminate
+                  :loading="loading"
                   color="red"
                 ></v-progress-circular>
               </div>
@@ -69,6 +70,9 @@
             </infinite-loading>
           </v-col>
         </v-row>
+        <v-col class="text-center" v-if="!has_next_page">
+            <p>No more videos</p>
+          </v-col>
       </main>
     </v-container>
   </div>
@@ -80,13 +84,17 @@ import moment from 'moment'
 import VideoCard from '@/components/VideoCard'
 import VideoService from '@/services/VideoService'
 import { constants } from '@/globals/contants'
+import {followMixin} from '@/mixins/follow.js'
 
 export default {
   name: 'Home',
+  mixins:[followMixin],
   data: () => ({
     loading: false,
     loaded: false,
     errored: false,
+    after:null,
+    has_next_page:true,
     videos: [],
     service_id : process.env.VUE_APP_BYOTUBE_SERVICE_ID,
     page: 1,
@@ -128,14 +136,25 @@ export default {
         this.loading = true
       }
       
+      if(!this.has_next_page){
+        this.loading = false
+        $state.complete()
+        this.loaded = true
+        return
+      }
       let host_url = ''
       if(this.initialState.domain){
         host_url = `https://${this.initialState.domain}`
       }
 
-      const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query`;
+      const filter = {
+        first:40,
+        after:(() => this.after)()
+      }
 
-      const videos = await VideoService.getMemberVideos(data_url)
+      const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query?filter`;
+
+      const videos = await VideoService.getMemberVideos(data_url, filter)
         .catch((err) => {
           console.log(err)
           this.errored = true
@@ -148,6 +167,10 @@ export default {
 
       if (videos.data.edges.length) {
         this.page += 1
+        this.has_next_page = videos?.data?.page_info?.has_next_page
+        if( this.has_next_page){
+          this.after = videos?.data?.page_info?.end_cursor
+        }
         this.videos.push(...videos.data.edges)
         $state.loaded()
         this.loaded = true
@@ -158,6 +181,10 @@ export default {
     async getVideos($state){
       this.initialState.auth_token ? await this.getMemberVideos($state) : await this.getServiceVideos($state)
     },
+    async followChannel(asset, origin){
+      const {creator, created_timestamp } = asset
+      await this.follow(creator, origin, this.service_id, created_timestamp)
+    },
     dateFormatter(date) {
       return moment(date).fromNow()
     },
@@ -166,6 +193,7 @@ export default {
       const SIGNED_TOKEN = "dummy"
 
       let asset = edge.node
+      asset.origin = edge.origin
       if (asset.ingest_status != 'external') {
         let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${constants.BYOTUBE_SERVICE_ID}&signedby=${SIGNEDBY}&token=${SIGNED_TOKEN}&ingest_status=${asset.ingest_status}`
         fetch(apiUrl)
