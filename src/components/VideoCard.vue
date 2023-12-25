@@ -45,7 +45,9 @@
                   color="danger"
                 >
                   <v-list-item ripple selectable @click="$emit('follow')">
-                    <v-list-item-title style="cursor: pointer;">Follow</v-list-item-title>
+                    <v-list-item-title style="cursor: pointer;">
+                      {{ followedAccounts && followedAccounts.includes(channel) ? 'Followed' : 'Follow' }}
+                    </v-list-item-title>
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
@@ -86,6 +88,10 @@ export default {
     },
     channel: {
       type: [Object,String],
+      required: true,
+    },
+    followedAccounts: {
+      type: [Array,String],
       required: true,
     },
     card: Object,

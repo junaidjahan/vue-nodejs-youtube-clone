@@ -1,15 +1,16 @@
 import Api from '@/services/Api'
 
 export default {
-  getAll() {
-    return Api().get(`service/data`)
+  getAll(filter) {
+    console.log("FIlter", filter);
+    return Api().get(`service/data?${filter.after ? 'after='+filter.after : ''}`)
   },
   getMemberVideos(url, body={}) {
     return Api().post(url, body)
   },
 
-  async follow({domain, serviceId}, body){
-    return await Api().post(`https://${domain}/api/v1/data/${serviceId}/network_invites/append`, body)
+  follow({domain, serviceId}, body){
+    return Api().post(`https://${domain}/api/v1/data/${serviceId}/network_invites/append`, body)
   },
   
   getById(url, filter) {

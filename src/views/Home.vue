@@ -33,6 +33,7 @@
                 :card="{ maxWidth: 350 }"
                 :video="video.node"
                 :channel="video.origin"
+                :followed-accounts="followedAccounts"
                 @follow="followChannel(video.node, video.origin)"
               ></video-card>
             </v-skeleton-loader>
@@ -103,7 +104,8 @@ export default {
         domain: typeof window !== "undefined" ? window.localStorage.getItem('domain') : null,
         isAuthenticated: null,
         user: null
-    }
+    },
+    followedAccounts:null
   }),
   methods: {
     async getServiceVideos($state) {
@@ -111,7 +113,21 @@ export default {
         this.loading = true
       }
 
-      const videos = await VideoService.getAll()
+         
+      if(!this.has_next_page){
+        this.loading = false
+        $state.complete()
+        this.loaded = true
+        return
+      }
+      
+
+      const filter = {
+        first:40,
+        after:(() => this.after)()
+      }
+
+      const videos = await VideoService.getAll(filter)
         .catch((err) => {
           console.log(err)
           this.errored = true
@@ -124,6 +140,10 @@ export default {
 
       if (videos.data.edges.length) {
         this.page += 1
+        this.has_next_page = videos?.data?.page_info?.has_next_page
+        if( this.has_next_page){
+          this.after = videos?.data?.page_info?.end_cursor
+        }
         this.videos.push(...videos.data.edges)
         $state.loaded()
         this.loaded = true
@@ -142,6 +162,7 @@ export default {
         this.loaded = true
         return
       }
+
       let host_url = ''
       if(this.initialState.domain){
         host_url = `https://${this.initialState.domain}`
@@ -152,7 +173,7 @@ export default {
         after:(() => this.after)()
       }
 
-      const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query?filter`;
+      const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query`;
 
       const videos = await VideoService.getMemberVideos(data_url, filter)
         .catch((err) => {
@@ -183,11 +204,16 @@ export default {
     },
     async followChannel(asset, origin){
       const {creator, created_timestamp } = asset
-      await this.follow(creator, origin, this.service_id, created_timestamp)
+     const {data} = await this.follow(creator, origin, this.service_id, created_timestamp)
+     if(data){  
+        this.setFollowed(origin)
+     }
+     this.followedAccounts = JSON.parse(window.localStorage.getItem('followedAccounts')) 
     },
     dateFormatter(date) {
       return moment(date).fromNow()
     },
+
     getItem(edge) {
       const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
       const SIGNED_TOKEN = "dummy"
@@ -216,6 +242,9 @@ export default {
         this.$router.push({name:'Watch'})
       }
     }
+  },
+  mounted(){
+    this.followedAccounts = typeof window !== "undefined" ? JSON.parse(window.localStorage.getItem('followedAccounts')) : null
   },
   components: {
     VideoCard,

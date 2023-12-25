@@ -48,8 +48,13 @@
                                 asset.title
                               }}
                             </v-card-title>
-                              <v-btn rounded outlined @click="followChannel" >
-                                Follow
+                              <v-btn rounded outlined @click="followChannel">
+                                <p class="mb-0" v-if="followedAccounts && followedAccounts.includes(asset.origin) ">
+                                    Followed
+                                </p>
+                                <p class="mb-0" v-else>
+                                  Follow
+                                </p>
                               </v-btn>
                         </div>
                         <div v-if="asset.ingest_status === EXTERNAL" cols="1" class="pt-2">
@@ -371,7 +376,8 @@ export default {
     asset:{},
     videoOptions: {},
     key_id:'',
-    content_token:''
+    content_token:'',
+    followedAccounts:null,
    
   }),
   computed: {
@@ -386,7 +392,7 @@ export default {
       if(!assetData) return
       assetData = JSON.parse(assetData)
 
-      this.asset = {...assetData,  video_thumbnail: assetData.video_thumbnails[9],}
+      this.asset = {...assetData,  video_thumbnail: assetData.video_thumbnails[assetData.video_thumbnails.length-1],}
 
       this.key_id = assetData.key_id
       this.content_token = assetData.content_token
@@ -428,7 +434,11 @@ export default {
     },
 
     async followChannel(){
-      await this.follow(this.asset.creator, this.asset.origin, this.service_id, this.asset.created_timestamp)
+      const {data} = await this.follow(this.asset.creator, this.asset.origin, this.service_id, this.asset.created_timestamp)
+      if(data){  
+        this.setFollowed(this.asset.origin)
+        this.followedAccounts = JSON.parse(window.localStorage.getItem('followedAccounts')) 
+     }
     },
     async checkSubscription(id) {
       if (!this.isAuthenticated) return
@@ -590,6 +600,7 @@ export default {
   this.getVideo()
   },
   mounted() {
+    this.followedAccounts = typeof window !== "undefined" ? JSON.parse(window.localStorage.getItem('followedAccounts')) : null
     // if (this.isAuthenticated) this.updateViews(this.$route.params.id)
   },
   // beforeRouteUpdate(to, from, next) {
