@@ -61,7 +61,7 @@
                     ></v-text-field>
                   </ValidationProvider>
                   <div class="mt-6 d-flex justify-space-between">
-                    <v-btn
+                    <!-- <v-btn
                       text
                       small
                       class="pl-0 text-capitalize"
@@ -69,7 +69,7 @@
                       router
                       to="signup"
                       >Create account</v-btn
-                    >
+                    > -->
                     <v-btn
                       type="submit"
                       class="primary"
