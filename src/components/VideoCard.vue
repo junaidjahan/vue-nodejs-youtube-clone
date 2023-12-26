@@ -15,6 +15,7 @@
       <v-col cols="2" v-if="card.type != 'noAvatar'" style="position: relative; z-index: 10;">
           <div class="pl-0 pt-1" router :to="`/channels/${channel._id}`">
             <v-menu
+              v-if="$store.getters.isAuthenticated"
               v-model="showMenu"
               offset-y
               origin="center center"
@@ -24,6 +25,7 @@
               style="max-width: 600px;"
               :nudge-bottom="10"
               :close-on-content-click="false"
+              :elevated="false"
             >
               <template v-slot:activator="{ on, attrs }">
                   <v-list-item-avatar v-on="on" v-bind="attrs">
@@ -53,6 +55,19 @@
               </v-list>
               
             </v-menu>
+            <v-list-item-avatar v-else>
+                    <v-img
+                      v-if="video.creator_thumbnail"
+                      class="elevation-6"
+                      :src="video.creator_thumbnail"
+                
+                    ></v-img>
+                    <v-avatar v-else color="red">
+                      <span class="white--text headline ">
+                        {{ video.creator.split('')[0].toUpperCase() }}</span
+                      >
+                    </v-avatar>
+            </v-list-item-avatar>
           </div>
           <p class="text-sm" style="font-size: 14px !important;">
             {{ video.creator }}

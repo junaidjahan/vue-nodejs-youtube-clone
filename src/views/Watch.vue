@@ -48,7 +48,7 @@
                                 asset.title
                               }}
                             </v-card-title>
-                              <v-btn rounded outlined @click="followChannel">
+                              <v-btn rounded outlined @click="followChannel" v-if="$store.getters.isAuthenticated">
                                 <p class="mb-0" v-if="followedAccounts && followedAccounts.includes(asset.origin) ">
                                     Followed
                                 </p>
